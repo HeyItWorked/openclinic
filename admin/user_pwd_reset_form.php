@@ -125,17 +125,23 @@
   $tbody[] = $row;
 
   $row = Form::label("pwd", _("Password") . ":");
-  $row .= Form::password("pwd", 20,
+  $row .= Form::password("pwd",
     isset($formVar["pwd"]) ? $formVar["pwd"] : null,
-    isset($formError["pwd"]) ? array('error' => $formError["pwd"]) : null
+    array(
+      'size' => 20,
+      'error' => isset($formError["pwd"]) ? $formError["pwd"] : null
+    )
   );
 
   $tbody[] = $row;
 
   $row = Form::label("pwd2", _("Re-enter Password") . ":");
-  $row .= Form::password("pwd2", 20,
+  $row .= Form::password("pwd2",
     isset($formVar["pwd2"]) ? $formVar["pwd2"] : null,
-    isset($formError["pwd2"]) ? array('error' => $formError["pwd2"]) : null
+    array(
+      'size' => 20,
+      'error' => isset($formError["pwd2"]) ? $formError["pwd2"] : null
+    )
   );
 
   $tbody[] = $row;
