@@ -168,7 +168,7 @@
   catch (Throwable $error)
   {
     ResetFormError::discardOutput($resetPageLevel);
-    $resetErrorId = ResetFormError::report($error);
+    $resetErrorId = ResetFormError::handleFailure($error);
     header("Content-Type: text/html; charset=UTF-8");
     echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
       . '<title>Reset User Password</title></head><body>'

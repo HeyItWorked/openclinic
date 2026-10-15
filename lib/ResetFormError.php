@@ -11,7 +11,7 @@ class ResetFormError
       ob_end_clean();
     }
   }
-  public static function report(Throwable $error)
+  public static function handleFailure(Throwable $error)
   {
     http_response_code(500);
     unset($_SESSION['form']['var'], $_SESSION['form']['error']);
