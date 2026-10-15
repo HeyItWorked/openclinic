@@ -82,83 +82,95 @@
   /**
    * Show page
    */
-  $title = _("Reset User Password");
-  $focusFormField = "pwd"; // to avoid JavaScript mistakes in demo version
-  require_once("../layout/header.php");
+  require_once("../lib/ResetFormError.php");
+  $resetPageLevel = ob_get_level();
+  ob_start();
+  try
+  {
+    $title = _("Reset User Password");
+    $focusFormField = "pwd";
+    require_once("../layout/header.php");
 
-  /**
-   * Breadcrumb
-   */
-  $links = array(
-    _("Admin") => "../admin/index.php",
-    _("Users") => $returnLocation,
-    $title => ""
-  );
-  echo HTML::breadcrumb($links, "icon icon_user");
-  unset($links);
+    /**
+     * Breadcrumb
+     */
+    $links = array(
+      _("Admin") => "../admin/index.php",
+      _("Users") => $returnLocation,
+      $title => ""
+    );
+    echo HTML::breadcrumb($links, "icon icon_user");
+    unset($links);
 
-  echo Form::errorMsg();
+    echo Form::errorMsg();
 
-  /**
-   * Edit form
-   * @todo use user_fields.php with some controlling var to display adecuated fields
-   */
-  echo HTML::start('form',
-    array(
-      'id' => 'userPwd',
-      'method' => 'post',
-      'action' => '../admin/user_pwd_reset.php'
-    )
-  );
+    /**
+     * Edit form
+     * @todo use user_fields.php with some controlling var to display adecuated fields
+     */
+    echo HTML::start('form',
+      array(
+        'id' => 'userPwd',
+        'method' => 'post',
+        'action' => '../admin/user_pwd_reset.php'
+      )
+    );
 
-  echo Form::hidden("id_user", $formVar["id_user"]);
-  echo Form::hidden("login", $formVar["login"]);
+    echo Form::hidden("id_user", $formVar["id_user"]);
+    echo Form::hidden("login", $formVar["login"]);
 
-  echo Form::hidden("md5");
-  echo Form::hidden("md5_confirm");
+    echo Form::hidden("md5");
+    echo Form::hidden("md5_confirm");
 
-  $tbody = array();
+    $tbody = array();
 
-  $row = _("Login") . ": ";
-  $row .= HTML::tag('strong', $formVar["login"]);
+    $row = _("Login") . ": ";
+    $row .= HTML::tag('strong', $formVar["login"]);
 
-  $tbody[] = $row;
+    $tbody[] = $row;
 
-  $row = Form::label("pwd", _("Password") . ":");
-  $row .= Form::password("pwd",
-    isset($formVar["pwd"]) ? $formVar["pwd"] : null,
-    array(
-      'size' => 20,
-      'error' => isset($formError["pwd"]) ? $formError["pwd"] : null
-    )
-  );
+    $row = Form::label("pwd", _("Password") . ":");
+    $row .= Form::password("pwd",
+      isset($formVar["pwd"]) ? $formVar["pwd"] : null,
+      array(
+        'size' => 20,
+        'error' => isset($formError["pwd"]) ? $formError["pwd"] : null
+      )
+    );
 
-  $tbody[] = $row;
+    $tbody[] = $row;
 
-  $row = Form::label("pwd2", _("Re-enter Password") . ":");
-  $row .= Form::password("pwd2",
-    isset($formVar["pwd2"]) ? $formVar["pwd2"] : null,
-    array(
-      'size' => 20,
-      'error' => isset($formError["pwd2"]) ? $formError["pwd2"] : null
-    )
-  );
+    $row = Form::label("pwd2", _("Re-enter Password") . ":");
+    $row .= Form::password("pwd2",
+      isset($formVar["pwd2"]) ? $formVar["pwd2"] : null,
+      array(
+        'size' => 20,
+        'error' => isset($formError["pwd2"]) ? $formError["pwd2"] : null
+      )
+    );
 
-  $tbody[] = $row;
+    $tbody[] = $row;
 
-  $tfoot = array(
-    Form::button("change", _("Submit"))
-  );
+    $tfoot = array(
+      Form::button("change", _("Submit"))
+    );
 
-  echo Form::fieldset($title, $tbody, $tfoot);
+    echo Form::fieldset($title, $tbody, $tfoot);
 
-  echo HTML::end('form');
+    echo HTML::end('form');
 
-  echo HTML::para(HTML::link(_("Return"), $returnLocation));
+    echo HTML::para(HTML::link(_("Return"), $returnLocation));
 
-  /**
-   * Destroy form values and errors
-   */
-  Form::unsetSession();
-
-  require_once("../layout/footer.php");
+    Form::unsetSession();
+    require_once("../layout/footer.php");
+    ob_end_flush();
+  }
+  catch (Throwable $error)
+  {
+    ResetFormError::discardOutput($resetPageLevel);
+    $resetErrorId = ResetFormError::report($error);
+    header("Content-Type: text/html; charset=UTF-8");
+    echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+      . '<title>Reset User Password</title></head><body>'
+      . ResetFormError::body($resetErrorId) . '</body></html>';
+  }
