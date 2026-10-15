@@ -31,7 +31,7 @@ define("OPEN_UNSET_ONLY_VAR",   2);
  *
  * Methods:
  *  string text(string $name, string $value = null, array $attribs = null)
- *  string password(string $name, string $value = null, array $attribs = null)
+ *  string password(string $name, string $value = null, array $attribs = [])
  *  string select(string $name, array &$array, mixed $defaultValue = null, array $attribs = null)
  *  string textArea(string $name, string $value = null, array $attribs = null)
  *  string hidden(string $name, string $value = null, array $attribs = null)
@@ -106,7 +106,7 @@ class Form
   }
 
   /**
-   * string password(string $name, string $value = null, array $attribs = null)
+   * string password(string $name, string $value = null, array $attribs = [])
    *
    * Returns input html tag of type password.
    *
@@ -118,7 +118,7 @@ class Form
    * @static
    * @since 0.8
    */
-  public static function password($name, $value = null, $attribs = null)
+  public static function password($name, $value = null, array $attribs = [])
   {
     $attribs['type'] = 'password';
 
